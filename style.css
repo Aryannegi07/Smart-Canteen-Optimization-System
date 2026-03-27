@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg:         #f5f3ef;
+  --surface:    #ffffff;
+  --surface2:   #f9f7f4;
+  --surface3:   #f0ece5;
+  --accent:     #c84b2f;
+  --accent-h:   #a83a20;
+  --accent2:    #b45309;
+  --green:      #2d7a4f;
+  --green-dim:  rgba(45,122,79,0.1);
+  --red:        #c0392b;
+  --red-dim:    rgba(192,57,43,0.1);
+  --blue:       #1d6fa4;
+  --blue-dim:   rgba(29,111,164,0.1);
+  --text:       #1c1c1c;
+  --text2:      #444440;
+  --muted:      #8a8880;
+  --border:     #ddd9d2;
+  --border2:    #c8c4bc;
+  --radius:     12px;
+  --radius-sm:  8px;
+  --font:       'Plus Jakarta Sans', sans-serif;
+  --mono:       'DM Mono', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+
+/* ── NAV ─────────────────────────────────────────────────────────── */
+.topnav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(245,243,239,0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px; height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo { font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 10px; color: var(--text); text-decoration: none; }
+.nav-logo span { font-size: 1.3rem; }
+.nav-right { display: flex; align-items: center; gap: 14px; }
+.nav-user { font-size: 0.82rem; color: var(--muted); border: 1px solid var(--border); border-radius: 20px; padding: 5px 14px; background: var(--surface2); }
+.nav-badge { font-family: var(--mono); font-size: 0.67rem; background: rgba(200,75,47,0.08); color: var(--accent); border: 1px solid rgba(200,75,47,0.18); border-radius: 5px; padding: 3px 9px; }
+.btn-logout { background: var(--red-dim); color: var(--red); border: 1px solid rgba(192,57,43,0.2); border-radius: var(--radius-sm); padding: 6px 14px; font-size: 0.79rem; cursor: pointer; font-family: var(--font); transition: background 0.2s; }
+.btn-logout:hover { background: rgba(192,57,43,0.15); }
+
+/* ── PAGE ────────────────────────────────────────────────────────── */
+.page-content { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+
+/* ── BUTTONS ─────────────────────────────────────────────────────── */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: none; border-radius: var(--radius-sm); cursor: pointer; font-family: var(--font); font-weight: 600; transition: all 0.18s; text-decoration: none; }
+.btn-primary   { background: var(--accent); color: #fff; padding: 11px 22px; font-size: 0.92rem; }
+.btn-primary:hover { background: var(--accent-h); transform: translateY(-1px); }
+.btn-secondary { background: var(--surface2); color: var(--text2); padding: 9px 18px; font-size: 0.88rem; border: 1px solid var(--border); }
+.btn-secondary:hover { background: var(--surface3); border-color: var(--border2); }
+.btn-green  { background: var(--green-dim); color: var(--green); padding: 7px 14px; font-size: 0.83rem; border: 1px solid rgba(45,122,79,0.2); }
+.btn-green:hover { background: rgba(45,122,79,0.16); }
+.btn-red    { background: var(--red-dim); color: var(--red); padding: 7px 14px; font-size: 0.83rem; border: 1px solid rgba(192,57,43,0.2); }
+.btn-red:hover { background: rgba(192,57,43,0.15); }
+.btn-sm     { padding: 5px 11px; font-size: 0.78rem; border-radius: 6px; }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important; }
+
+/* ── INPUTS ──────────────────────────────────────────────────────── */
+.input-group  { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+.input-label  { font-size: 0.8rem; font-weight: 600; color: var(--text2); }
+.input-field  { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-family: var(--font); font-size: 0.92rem; padding: 11px 14px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
+.input-field:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(200,75,47,0.07); }
+.input-field::placeholder { color: #c0bcb5; }
+
+/* ── STATUS BADGES ───────────────────────────────────────────────── */
+.status-badge { display: inline-flex; align-items: center; font-size: 0.7rem; font-weight: 700; font-family: var(--mono); padding: 3px 10px; border-radius: 20px; text-transform: uppercase; }
+.status-pending   { background: rgba(180,83,9,0.09);  color: var(--accent2); border: 1px solid rgba(180,83,9,0.22); }
+.status-preparing { background: var(--blue-dim);       color: var(--blue);    border: 1px solid rgba(29,111,164,0.22); }
+.status-ready     { background: var(--green-dim);      color: var(--green);   border: 1px solid rgba(45,122,79,0.22); }
+.status-cancelled { background: var(--red-dim);        color: var(--red);     border: 1px solid rgba(192,57,43,0.18); }
+
+/* ── TOASTS ──────────────────────────────────────────────────────── */
+.toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+.toast { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 18px; display: flex; align-items: center; gap: 10px; min-width: 260px; box-shadow: 0 4px 14px rgba(0,0,0,0.08); animation: toastIn 0.3s ease; color: var(--text); font-size: 0.88rem; }
+.toast.success { border-left: 3px solid var(--green); }
+.toast.error   { border-left: 3px solid var(--red); }
+.toast.info    { border-left: 3px solid var(--blue); }
+@keyframes toastIn { from { transform: translateX(30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+/* ── MISC ────────────────────────────────────────────────────────── */
+.divider    { height: 1px; background: var(--border); margin: 16px 0; }
+.spinner    { width: 18px; height: 18px; border: 2px solid rgba(0,0,0,0.08); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.empty-state { text-align: center; padding: 52px 24px; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.empty-state .icon { font-size: 40px; }
+.empty-state p { font-size: 0.86rem; }
+
+@media (max-width: 768px) {
+  .topnav { padding: 0 16px; }
+  .page-content { padding: 16px; }
+}

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Canteen Ordering System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f5f3ef; --surface: #ffffff;
+      --accent: #c84b2f; --green: #2d7a4f;
+      --text: #1c1c1c; --muted: #8a8880; --border: #ddd9d2;
+      --font: 'Plus Jakarta Sans', sans-serif;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .wrap { display: flex; flex-direction: column; align-items: center; gap: 40px; animation: up 0.55s ease both; }
+    @keyframes up { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    .logo { text-align: center; }
+    .logo-icon { font-size: 52px; display: block; margin-bottom: 10px; }
+    h1 { font-size: 2.1rem; font-weight: 800; letter-spacing: -0.5px; }
+    .sub { color: var(--muted); font-size: 0.9rem; margin-top: 6px; }
+    .cards { display: flex; gap: 18px; }
+    .card {
+      text-decoration: none; width: 185px; padding: 30px 18px;
+      border-radius: 14px; border: 1.5px solid var(--border);
+      background: var(--surface);
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .card:hover { transform: scale(1.05); }
+    .card.student:hover { border-color: var(--green); }
+    .card.admin:hover   { border-color: var(--accent); }
+    .card-icon { font-size: 38px; }
+    .card-name { font-size: 1rem; font-weight: 700; }
+    .card-sub  { font-size: 0.76rem; color: var(--muted); }
+    .card.student .card-name { color: var(--green); }
+    .card.admin   .card-name { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="logo">
+      <span class="logo-icon">🍽️</span>
+      <h1>Canteen System</h1>
+      <p class="sub">Browse the menu, add to cart and place your order.</p>
+    </div>
+    <div class="cards">
+      <a href="student-login.html" class="card student">
+        <span class="card-icon">👨‍🎓</span>
+        <span class="card-name">Student</span>
+        <span class="card-sub">Browse &amp; Order</span>
+      </a>
+      <a href="admin-login.html" class="card admin">
+        <span class="card-icon">🛠️</span>
+        <span class="card-name">Admin</span>
+        <span class="card-sub">Manage Orders</span>
+      </a>
+    </div>
+  </div>
+</body>
+</html>

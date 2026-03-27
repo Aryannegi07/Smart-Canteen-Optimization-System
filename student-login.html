@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Login — Canteen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+
+      .box {
+        width: 430px;
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: 16px;
+        padding: 40px;
+        animation: up 0.5s ease both;
+      }
+      @keyframes up {
+        from {
+          opacity: 0;
+          transform: translateY(18px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .hdr {
+        text-align: center;
+        margin-bottom: 26px;
+      }
+      .hdr .ico {
+        font-size: 42px;
+        display: block;
+        margin-bottom: 8px;
+      }
+      .hdr h2 {
+        font-size: 1.55rem;
+        font-weight: 800;
+      }
+      .hdr p {
+        color: var(--muted);
+        font-size: 0.81rem;
+        margin-top: 4px;
+      }
+      .ul {
+        height: 3px;
+        width: 38px;
+        background: var(--green);
+        border-radius: 3px;
+        margin: 8px auto 0;
+      }
+
+      .tabs {
+        display: flex;
+        background: var(--surface2);
+        border-radius: 10px;
+        padding: 3px;
+        margin-bottom: 22px;
+        border: 1px solid var(--border);
+      }
+      .tab {
+        flex: 1;
+        padding: 9px;
+        border: none;
+        background: none;
+        color: var(--muted);
+        font-family: var(--font);
+        font-size: 0.86rem;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .tab.active {
+        background: var(--green);
+        color: #fff;
+      }
+
+      .panel {
+        display: none;
+      }
+      .panel.active {
+        display: block;
+        animation: fade 0.22s ease both;
+      }
+      @keyframes fade {
+        from {
+          opacity: 0;
+          transform: translateY(5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .msg {
+        border-radius: var(--radius-sm);
+        padding: 9px 13px;
+        font-size: 0.81rem;
+        margin-bottom: 14px;
+        display: none;
+      }
+      .msg.error {
+        background: var(--red-dim);
+        border: 1px solid rgba(192, 57, 43, 0.2);
+        color: var(--red);
+      }
+      .msg.success {
+        background: var(--green-dim);
+        border: 1px solid rgba(45, 122, 79, 0.2);
+        color: var(--green);
+      }
+
+      .btn-full {
+        width: 100%;
+        padding: 12px;
+        font-size: 0.92rem;
+      }
+      .hint {
+        text-align: center;
+        margin-top: 14px;
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+      .hint button {
+        background: none;
+        border: none;
+        color: var(--green);
+        cursor: pointer;
+        font-family: var(--font);
+        font-weight: 700;
+        font-size: 0.8rem;
+        text-decoration: underline;
+        padding: 0;
+      }
+
+      .back {
+        display: block;
+        text-align: center;
+        margin-top: 14px;
+        color: var(--muted);
+        font-size: 0.8rem;
+        text-decoration: none;
+      }
+      .back:hover {
+        color: var(--text);
+      }
+
+      .str-wrap {
+        margin-top: 4px;
+        height: 3px;
+        background: var(--surface3);
+        border-radius: 3px;
+        overflow: hidden;
+      }
+      .str-bar {
+        height: 100%;
+        border-radius: 3px;
+        width: 0;
+        transition:
+          width 0.3s,
+          background 0.3s;
+      }
+      .str-lbl {
+        font-size: 0.7rem;
+        margin-top: 3px;
+        color: var(--muted);
+      }
+
+      .u-count {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--green-dim);
+        border: 1px solid rgba(45, 122, 79, 0.18);
+        border-radius: 8px;
+        padding: 7px 12px;
+        margin-bottom: 16px;
+        font-size: 0.78rem;
+        color: var(--muted);
+      }
+      .u-count span {
+        color: var(--green);
+        font-weight: 700;
+        font-family: var(--mono);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      <div class="hdr">
+        <span class="ico">👨‍🎓</span>
+        <h2>Student Portal</h2>
+        <p>Login or sign up to place your order</p>
+        <div class="ul"></div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" id="tabLogin" onclick="go('login')">
+          Login
+        </button>
+        <button class="tab" id="tabSignup" onclick="go('signup')">
+          Sign Up
+        </button>
+      </div>
+
+      <!-- LOGIN PANEL -->
+      <div class="panel active" id="pLogin">
+        <div class="u-count">
+          👥 <span id="uCount">0</span> students registered
+        </div>
+        <div class="msg error" id="lErr"></div>
+        <div class="msg success" id="lOk"></div>
+        <div class="input-group">
+          <label class="input-label">Username</label>
+          <input
+            type="text"
+            id="lUser"
+            class="input-field"
+            autocomplete="off"
+          />
+        </div>
+        <div class="input-group">
+          <label class="input-label">Password</label>
+          <input type="password" id="lPass" class="input-field" />
+        </div>
+        <button class="btn btn-green btn-full" onclick="doLogin()">
+          Login →
+        </button>
+        <div class="hint">
+          New here? <button onclick="go('signup')">Create an account</button>
+        </div>
+      </div>
+
+      <!-- SIGNUP PANEL -->
+      <div class="panel" id="pSignup">
+        <div class="msg error" id="sErr"></div>
+        <div class="msg success" id="sOk"></div>
+        <div class="input-group">
+          <label class="input-label">Full Name</label>
+          <input
+            type="text"
+            id="sName"
+            class="input-field"
+            autocomplete="off"
+          />
+        </div>
+        <div class="input-group">
+          <label class="input-label">Username</label>
+          <input
+            type="text"
+            id="sUser"
+            class="input-field"
+            oninput="checkUser()"
+          />
+        </div>
+        <div class="input-group">
+          <label class="input-label">Roll Number</label>
+          <input type="text" id="sRoll" class="input-field" />
+        </div>
+        <div class="input-group">
+          <label class="input-label">Password</label>
+          <input
+            type="password"
+            id="sPass"
+            class="input-field"
+            oninput="checkStr()"
+          />
+          <div class="str-wrap"><div class="str-bar" id="strBar"></div></div>
+          <div class="str-lbl" id="strLbl"></div>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Confirm Password</label>
+          <input type="password" id="sConf" class="input-field" />
+        </div>
+        <button class="btn btn-green btn-full" onclick="doSignup()">
+          Create Account →
+        </button>
+        <div class="hint">
+          Already registered? <button onclick="go('login')">Login here</button>
+        </div>
+      </div>
+
+      <a href="index.html" class="back">← Back</a>
+    </div>
+
+    <script>
+      const SKEY = "canteen_students";
+      const getS = () => JSON.parse(localStorage.getItem(SKEY) || "[]");
+      const saveS = (a) => localStorage.setItem(SKEY, JSON.stringify(a));
+
+      (function init() {
+        if (getS().length === 0)
+          saveS([
+            {
+              name: "Demo Student",
+              username: "student",
+              roll: "001",
+              password: "1234",
+            },
+          ]);
+        document.getElementById("uCount").textContent = getS().length;
+      })();
+
+      function go(tab) {
+        ["login", "signup"].forEach((t) => {
+          const cap = t[0].toUpperCase() + t.slice(1);
+          document
+            .getElementById("p" + cap)
+            .classList.toggle("active", t === tab);
+          document
+            .getElementById("tab" + cap)
+            .classList.toggle("active", t === tab);
+        });
+        clearAll();
+      }
+
+      function clearAll() {
+        ["lErr", "lOk", "sErr", "sOk"].forEach((id) => {
+          const e = document.getElementById(id);
+          if (e) {
+            e.style.display = "none";
+            e.textContent = "";
+          }
+        });
+      }
+
+      function showMsg(id, txt) {
+        const e = document.getElementById(id);
+        e.textContent = txt;
+        e.style.display = "block";
+      }
+
+      function doLogin() {
+        const u = document.getElementById("lUser").value.trim();
+        const p = document.getElementById("lPass").value;
+        clearAll();
+        if (!u || !p) {
+          showMsg("lErr", "Please fill in all fields.");
+          return;
+        }
+        const found = getS().find((s) => s.username === u && s.password === p);
+        if (found) {
+          showMsg("lOk", "Welcome, " + found.name + "! Redirecting...");
+          sessionStorage.setItem("role", "student");
+          sessionStorage.setItem("user", found.username);
+          sessionStorage.setItem("displayName", found.name);
+          setTimeout(() => (window.location.href = "menu.html"), 700);
+        } else {
+          showMsg("lErr", "Invalid username or password.");
+        }
+      }
+
+      function doSignup() {
+        const name = document.getElementById("sName").value.trim();
+        const user = document
+          .getElementById("sUser")
+          .value.trim()
+          .toLowerCase();
+        const roll = document.getElementById("sRoll").value.trim();
+        const pass = document.getElementById("sPass").value;
+        const conf = document.getElementById("sConf").value;
+        clearAll();
+        if (!name || !user || !roll || !pass || !conf) {
+          showMsg("sErr", "Please fill in all fields.");
+          return;
+        }
+        if (user.length < 3) {
+          showMsg("sErr", "Username must be at least 3 characters.");
+          return;
+        }
+        if (roll.length < 3) {
+          showMsg("sErr", "Roll number must be at least 3 characters.");
+          return;
+        }
+        if (pass.length < 4) {
+          showMsg("sErr", "Password must be at least 4 characters.");
+          return;
+        }
+        if (pass !== conf) {
+          showMsg("sErr", "Passwords do not match.");
+          return;
+        }
+        const list = getS();
+        if (list.find((s) => s.username === user)) {
+          showMsg("sErr", 'Username "' + user + '" is already taken.');
+          return;
+        }
+        if (list.find((s) => s.roll === roll)) {
+          showMsg("sErr", "Roll number already registered.");
+          return;
+        }
+        list.push({ name, username: user, roll, password: pass });
+        saveS(list);
+        document.getElementById("uCount").textContent = list.length;
+        showMsg("sOk", "Account created! Logging you in...");
+        sessionStorage.setItem("role", "student");
+        sessionStorage.setItem("user", user);
+        sessionStorage.setItem("displayName", name);
+        setTimeout(() => (window.location.href = "menu.html"), 900);
+      }
+
+      function checkUser() {
+        const u = document.getElementById("sUser").value.trim().toLowerCase();
+        const el = document.getElementById("sUser");
+        if (u.length < 2) {
+          el.style.borderColor = "";
+          return;
+        }
+        el.style.borderColor = getS().some((s) => s.username === u)
+          ? "#c0392b"
+          : "#2d7a4f";
+      }
+
+      function checkStr() {
+        const p = document.getElementById("sPass").value;
+        const bar = document.getElementById("strBar");
+        const lbl = document.getElementById("strLbl");
+        let sc = 0;
+        if (p.length >= 4) sc++;
+        if (p.length >= 8) sc++;
+        if (/[A-Z]/.test(p)) sc++;
+        if (/[0-9]/.test(p)) sc++;
+        if (/[^A-Za-z0-9]/.test(p)) sc++;
+        const lvls = [
+          { w: "0%", bg: "", l: "" },
+          { w: "25%", bg: "#c0392b", l: "Weak" },
+          { w: "50%", bg: "#b45309", l: "Fair" },
+          { w: "75%", bg: "#d97706", l: "Good" },
+          { w: "100%", bg: "#2d7a4f", l: "Strong" },
+        ];
+        const lv = lvls[Math.min(sc, 4)];
+        bar.style.width = lv.w;
+        bar.style.background = lv.bg;
+        lbl.textContent = lv.l;
+        lbl.style.color = lv.bg;
+      }
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key !== "Enter") return;
+        document.getElementById("pLogin").classList.contains("active")
+          ? doLogin()
+          : doSignup();
+      });
+    </script>
+  </body>
+</html>
