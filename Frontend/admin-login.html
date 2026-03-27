@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login — Canteen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+      .box {
+        width: 400px;
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: 16px;
+        padding: 44px 38px;
+        animation: up 0.5s ease both;
+      }
+      @keyframes up {
+        from {
+          opacity: 0;
+          transform: translateY(18px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .hdr {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      .hdr .ico {
+        font-size: 42px;
+        display: block;
+        margin-bottom: 8px;
+      }
+      .hdr h2 {
+        font-size: 1.55rem;
+        font-weight: 800;
+      }
+      .hdr p {
+        color: var(--muted);
+        font-size: 0.81rem;
+        margin-top: 4px;
+      }
+      .ul {
+        height: 3px;
+        width: 38px;
+        background: var(--accent);
+        border-radius: 3px;
+        margin: 8px auto 0;
+      }
+      .err {
+        background: var(--red-dim);
+        border: 1px solid rgba(192, 57, 43, 0.2);
+        border-radius: var(--radius-sm);
+        padding: 9px 13px;
+        font-size: 0.81rem;
+        color: var(--red);
+        margin-bottom: 14px;
+        display: none;
+      }
+      .btn-full {
+        width: 100%;
+        padding: 12px;
+        font-size: 0.92rem;
+      }
+      .back {
+        display: block;
+        text-align: center;
+        margin-top: 16px;
+        color: var(--muted);
+        font-size: 0.8rem;
+        text-decoration: none;
+      }
+      .back:hover {
+        color: var(--text);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      <div class="hdr">
+        <span class="ico">🛠️</span>
+        <h2>Admin Login</h2>
+        <p>Manage orders, menu and activity</p>
+        <div class="ul"></div>
+      </div>
+
+      <div class="err" id="errMsg"></div>
+
+      <div class="input-group">
+        <label class="input-label">Admin ID</label>
+        <input type="text" id="aId" class="input-field" autocomplete="off" />
+      </div>
+      <div class="input-group">
+        <label class="input-label">Password</label>
+        <input type="password" id="aPass" class="input-field" />
+      </div>
+
+      <button class="btn btn-primary btn-full" onclick="doLogin()">
+        Access Dashboard →
+      </button>
+      <a href="index.html" class="back">← Back</a>
+    </div>
+
+    <script>
+      const ADMIN_ID = "admin";
+      const ADMIN_PASS = "admin123";
+
+      function doLogin() {
+        const id = document.getElementById("aId").value.trim();
+        const p = document.getElementById("aPass").value.trim();
+        const err = document.getElementById("errMsg");
+        if (!id || !p) {
+          err.textContent = "Please fill in both fields.";
+          err.style.display = "block";
+          return;
+        }
+        if (id === ADMIN_ID && p === ADMIN_PASS) {
+          sessionStorage.setItem("role", "admin");
+          sessionStorage.setItem("user", id);
+          window.location.href = "admin.html";
+        } else {
+          err.textContent = "Invalid credentials.";
+          err.style.display = "block";
+        }
+      }
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") doLogin();
+      });
+    </script>
+  </body>
+</html>

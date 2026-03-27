@@ -1,0 +1,835 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard — Canteen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .stats-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 13px;
+        margin-bottom: 26px;
+      }
+      .scard {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        padding: 18px 20px;
+        transition:
+          transform 0.2s ease,
+          border-color 0.2s ease;
+      }
+      .scard:hover {
+        transform: scale(1.03);
+        border-color: var(--border2);
+      }
+      .slbl {
+        font-size: 0.7rem;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 600;
+      }
+      .sval {
+        font-size: 1.85rem;
+        font-weight: 800;
+        font-family: var(--mono);
+        margin-top: 4px;
+      }
+      .ssub {
+        font-size: 0.7rem;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+      .c1 .sval {
+        color: var(--accent);
+      }
+      .c2 .sval {
+        color: var(--green);
+      }
+      .c3 .sval {
+        color: var(--accent2);
+      }
+      .c4 .sval {
+        color: var(--blue);
+      }
+
+      .tab-bar {
+        display: flex;
+        gap: 2px;
+        margin-bottom: 20px;
+        border-bottom: 1.5px solid var(--border);
+      }
+      .tab-btn {
+        background: none;
+        border: none;
+        color: var(--muted);
+        padding: 10px 18px;
+        font-size: 0.86rem;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: var(--font);
+        border-bottom: 2px solid transparent;
+        transition: all 0.18s;
+        margin-bottom: -1.5px;
+      }
+      .tab-btn.active {
+        color: var(--text);
+        border-bottom-color: var(--accent);
+      }
+      .tab-btn:hover {
+        color: var(--text2);
+      }
+      .tab-pane {
+        display: none;
+      }
+      .tab-pane.active {
+        display: block;
+      }
+
+      .oh {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 13px;
+        flex-wrap: wrap;
+        gap: 9px;
+      }
+      .fsel {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        color: var(--text);
+        border-radius: var(--radius-sm);
+        padding: 7px 12px;
+        font-family: var(--font);
+        font-size: 0.82rem;
+        outline: none;
+        cursor: pointer;
+      }
+      .tw {
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.82rem;
+      }
+      th {
+        text-align: left;
+        padding: 9px 12px;
+        color: var(--muted);
+        font-size: 0.69rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-bottom: 1px solid var(--border);
+        white-space: nowrap;
+        font-weight: 600;
+      }
+      td {
+        padding: 11px 12px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: middle;
+      }
+      tr:hover td {
+        background: var(--surface2);
+      }
+      .oid {
+        font-family: var(--mono);
+        font-size: 0.74rem;
+        color: var(--muted);
+      }
+      .oitems {
+        font-size: 0.77rem;
+        color: var(--muted);
+      }
+      .ag {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+      }
+
+      .mgrid {
+        display: grid;
+        grid-template-columns: 1fr 295px;
+        gap: 20px;
+      }
+      .mlist {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+      .mrow {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 10px 13px;
+        transition:
+          transform 0.18s ease,
+          border-color 0.18s ease;
+      }
+      .mrow:hover {
+        transform: scale(1.015);
+        border-color: var(--border2);
+      }
+      .mrow-emo {
+        font-size: 24px;
+      }
+      .mrow-info {
+        flex: 1;
+      }
+      .mrow-name {
+        font-weight: 700;
+        font-size: 0.86rem;
+      }
+      .mrow-cat {
+        font-size: 0.7rem;
+        color: var(--muted);
+        margin-top: 1px;
+      }
+      .mrow-price {
+        font-family: var(--mono);
+        color: var(--accent2);
+        font-weight: 700;
+        font-size: 0.86rem;
+      }
+      .add-form {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px;
+      }
+      .add-form h3 {
+        font-size: 0.93rem;
+        margin-bottom: 16px;
+        font-weight: 700;
+      }
+
+      .slist {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+      .srow {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 10px 13px;
+        transition:
+          transform 0.18s ease,
+          border-color 0.18s ease;
+      }
+      .srow:hover {
+        transform: scale(1.012);
+        border-color: var(--border2);
+      }
+      .savatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: var(--green-dim);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        flex-shrink: 0;
+        border: 1px solid rgba(45, 122, 79, 0.2);
+      }
+      .sinfo {
+        flex: 1;
+      }
+      .sname {
+        font-weight: 700;
+        font-size: 0.86rem;
+      }
+      .smeta {
+        font-size: 0.7rem;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+
+      .llist {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .lentry {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 10px 13px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        font-size: 0.8rem;
+      }
+      .ltime {
+        font-family: var(--mono);
+        font-size: 0.69rem;
+        color: var(--muted);
+        min-width: 66px;
+        padding-top: 1px;
+      }
+      .ldot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        margin-top: 5px;
+        flex-shrink: 0;
+      }
+      .ldot.order {
+        background: var(--green);
+      }
+      .ldot.status {
+        background: var(--blue);
+      }
+      .ldot.admin {
+        background: var(--accent);
+      }
+
+      @media (max-width: 900px) {
+        .stats-row {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .mgrid {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 600px) {
+        .stats-row {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="topnav">
+      <div class="nav-logo">🛠️ Admin Panel</div>
+      <div class="nav-right">
+        <span class="nav-user" id="navUser"></span>
+        <span class="nav-badge">Admin</span>
+        <button class="btn-logout" onclick="logout()">Logout</button>
+      </div>
+    </nav>
+
+    <div class="page-content">
+      <div class="stats-row">
+        <div class="scard c1">
+          <div class="slbl">Total Orders</div>
+          <div class="sval" id="sTot">—</div>
+          <div class="ssub">All time</div>
+        </div>
+        <div class="scard c2">
+          <div class="slbl">Ready</div>
+          <div class="sval" id="sRdy">—</div>
+          <div class="ssub">For pickup</div>
+        </div>
+        <div class="scard c3">
+          <div class="slbl">Revenue</div>
+          <div class="sval" id="sRev">—</div>
+          <div class="ssub">Today (₹)</div>
+        </div>
+        <div class="scard c4">
+          <div class="slbl">Pending</div>
+          <div class="sval" id="sPen">—</div>
+          <div class="ssub">In queue</div>
+        </div>
+      </div>
+
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('orders', this)">
+          Orders
+        </button>
+        <button class="tab-btn" onclick="switchTab('menu', this)">
+          Menu Items
+        </button>
+        <button class="tab-btn" onclick="switchTab('students', this)">
+          Students
+        </button>
+        <button class="tab-btn" onclick="switchTab('log', this)">
+          Activity Log
+        </button>
+      </div>
+
+      <!-- ORDERS -->
+      <div class="tab-pane active" id="tab-orders">
+        <div class="oh">
+          <span style="font-weight: 700; font-size: 0.93rem"
+            >Live Order Queue</span
+          >
+          <div
+            style="
+              display: flex;
+              gap: 8px;
+              align-items: center;
+              flex-wrap: wrap;
+            "
+          >
+            <select class="fsel" id="statFilter" onchange="renderOrders()">
+              <option value="all">All Statuses</option>
+              <option value="Pending">Pending</option>
+              <option value="Preparing">Preparing</option>
+              <option value="Ready">Ready</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+            <button class="btn btn-secondary btn-sm" onclick="refreshOrders()">
+              ↻ Refresh
+            </button>
+          </div>
+        </div>
+        <div class="tw">
+          <table>
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Student</th>
+                <th>Items</th>
+                <th>Total</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="ordBody"></tbody>
+          </table>
+        </div>
+        <div id="ordEmpty" class="empty-state" style="display: none">
+          <div class="icon">📭</div>
+          <p>No orders yet</p>
+        </div>
+      </div>
+
+      <!-- MENU -->
+      <div class="tab-pane" id="tab-menu">
+        <div class="mgrid">
+          <div>
+            <div
+              style="font-weight: 700; font-size: 0.93rem; margin-bottom: 13px"
+            >
+              Menu Items
+            </div>
+            <div class="mlist" id="menuList"></div>
+          </div>
+          <div class="add-form">
+            <h3>Add New Item</h3>
+            <div class="input-group">
+              <label class="input-label">Item Name</label>
+              <input type="text" class="input-field" id="nName" />
+            </div>
+            <div class="input-group">
+              <label class="input-label">Category</label>
+              <select class="input-field fsel" id="nCat">
+                <option>Main Course</option>
+                <option>Snacks</option>
+                <option>Beverages</option>
+                <option>Drinks</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label class="input-label">Price (₹)</label>
+              <input type="number" class="input-field" id="nPrice" />
+            </div>
+            <div class="input-group">
+              <label class="input-label">Emoji</label>
+              <input
+                type="text"
+                class="input-field"
+                id="nEmoji"
+                maxlength="4"
+              />
+            </div>
+            <button
+              class="btn btn-primary"
+              style="width: 100%; padding: 11px"
+              onclick="addItem()"
+            >
+              Add to Menu
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STUDENTS -->
+      <div class="tab-pane" id="tab-students">
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 13px;
+          "
+        >
+          <span style="font-weight: 700; font-size: 0.93rem"
+            >Registered Students</span
+          >
+          <span class="nav-badge" id="stuTotal">0 students</span>
+        </div>
+        <div class="slist" id="stuList"></div>
+      </div>
+
+      <!-- LOG -->
+      <div class="tab-pane" id="tab-log">
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 13px;
+          "
+        >
+          <span style="font-weight: 700; font-size: 0.93rem">Activity Log</span>
+          <button class="btn btn-red btn-sm" onclick="clearLog()">Clear</button>
+        </div>
+        <div class="llist" id="logList">
+          <div class="empty-state">
+            <div class="icon">📋</div>
+            <p>No activity yet</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast-container" id="tc"></div>
+
+    <script>
+      const API = "http://localhost:8080/api";
+      const MENU_KEY = "canteen_menu";
+
+      const DEFAULT_MENU = [
+        { id: 1, name: "Burger", emoji: "🍔", price: 50, cat: "Main Course" },
+        { id: 2, name: "Coffee", emoji: "☕", price: 30, cat: "Beverages" },
+        { id: 3, name: "Cold Drink", emoji: "🥤", price: 25, cat: "Drinks" },
+        {
+          id: 4,
+          name: "Pizza Slice",
+          emoji: "🍕",
+          price: 80,
+          cat: "Main Course",
+        },
+        { id: 5, name: "Samosa", emoji: "🥟", price: 15, cat: "Snacks" },
+        { id: 6, name: "Maggi", emoji: "🍜", price: 30, cat: "Main Course" },
+        { id: 7, name: "Tea", emoji: "🍵", price: 10, cat: "Beverages" },
+        { id: 8, name: "Sandwich", emoji: "🥪", price: 40, cat: "Snacks" },
+        {
+          id: 9,
+          name: "Chicken Roll",
+          emoji: "🌯",
+          price: 70,
+          cat: "Main Course",
+        },
+        { id: 10, name: "Juice", emoji: "🧃", price: 35, cat: "Drinks" },
+      ];
+
+      function loadMenu() {
+        const s = localStorage.getItem(MENU_KEY);
+        if (!s) {
+          localStorage.setItem(MENU_KEY, JSON.stringify(DEFAULT_MENU));
+          return [...DEFAULT_MENU];
+        }
+        return JSON.parse(s);
+      }
+      function saveMenu() {
+        localStorage.setItem(MENU_KEY, JSON.stringify(MENU));
+      }
+
+      let MENU = [];
+      let orders = [];
+      let log = [];
+
+      window.onload = () => {
+        if (sessionStorage.getItem("role") !== "admin") {
+          window.location.href = "admin-login.html";
+          return;
+        }
+        document.getElementById("navUser").textContent =
+          sessionStorage.getItem("user");
+        MENU = loadMenu();
+        refreshOrders();
+        renderMenuList();
+      };
+
+      function switchTab(id, btn) {
+        document
+          .querySelectorAll(".tab-pane")
+          .forEach((p) => p.classList.remove("active"));
+        document
+          .querySelectorAll(".tab-btn")
+          .forEach((b) => b.classList.remove("active"));
+        document.getElementById("tab-" + id).classList.add("active");
+        btn.classList.add("active");
+        if (id === "students") renderStudents();
+      }
+
+      async function refreshOrders() {
+        try {
+          const res = await fetch(`${API}/orders`);
+          if (res.ok) {
+            const data = await res.json();
+            orders = data.map((o, i) => ({
+              id: o.id || "ORD-" + (1001 + i),
+              student: o.studentName || "student",
+              items: o.items || [],
+              total: o.total || 0,
+              time: o.time || new Date().toLocaleTimeString(),
+              status: o.status || "Pending",
+            }));
+          }
+        } catch {
+          if (!orders.length) seedDemo();
+        }
+        renderOrders();
+        updateStats();
+      }
+
+      function renderOrders() {
+        const f = document.getElementById("statFilter").value;
+        let list = [...orders].sort((a, b) => {
+          try {
+            return (
+              new Date("1970/01/01 " + a.time) -
+              new Date("1970/01/01 " + b.time)
+            );
+          } catch {
+            return 0;
+          }
+        });
+        if (f !== "all") list = list.filter((o) => o.status === f);
+        const tb = document.getElementById("ordBody");
+        const em = document.getElementById("ordEmpty");
+        if (!list.length) {
+          tb.innerHTML = "";
+          em.style.display = "flex";
+          return;
+        }
+        em.style.display = "none";
+        tb.innerHTML = list
+          .map(
+            (o) => `
+        <tr>
+          <td><span class="oid">${o.id}</span></td>
+          <td>${o.student}</td>
+          <td class="oitems">${fmtItems(o.items)}</td>
+          <td><span style="font-family:var(--mono);color:var(--accent2);font-weight:700">₹${o.total}</span></td>
+          <td><span style="font-family:var(--mono);font-size:0.74rem;color:var(--muted)">${o.time}</span></td>
+          <td><span class="status-badge status-${o.status.toLowerCase()}">${o.status}</span></td>
+          <td><div class="ag">
+            ${o.status === "Pending" ? `<button class="btn btn-secondary btn-sm" onclick="setStatus('${o.id}','Preparing')">▶ Prepare</button>` : ""}
+            ${o.status === "Preparing" ? `<button class="btn btn-green btn-sm"     onclick="setStatus('${o.id}','Ready')">✓ Ready</button>` : ""}
+            ${o.status !== "Cancelled" && o.status !== "Ready" ? `<button class="btn btn-red btn-sm" onclick="setStatus('${o.id}','Cancelled')">✕</button>` : ""}
+          </div></td>
+        </tr>`,
+          )
+          .join("");
+      }
+
+      function fmtItems(items) {
+        if (!items || !Array.isArray(items)) return "—";
+        return items.map((i) => i.item + " ×" + i.qty).join(", ");
+      }
+
+      async function setStatus(id, ns) {
+        const o = orders.find((x) => x.id === id);
+        if (!o) return;
+        const old = o.status;
+        o.status = ns;
+        try {
+          await fetch(`${API}/orders/${id}/status`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status: ns }),
+          });
+        } catch {}
+        addLog("Order " + id + ": " + old + " → " + ns, "status");
+        renderOrders();
+        updateStats();
+        toast("Order " + id + " → " + ns, "success");
+      }
+
+      function updateStats() {
+        document.getElementById("sTot").textContent = orders.length;
+        document.getElementById("sRdy").textContent = orders.filter(
+          (o) => o.status === "Ready",
+        ).length;
+        document.getElementById("sRev").textContent = orders
+          .filter((o) => o.status !== "Cancelled")
+          .reduce((s, o) => s + (o.total || 0), 0);
+        document.getElementById("sPen").textContent = orders.filter(
+          (o) => o.status === "Pending",
+        ).length;
+      }
+
+      function renderMenuList() {
+        document.getElementById("menuList").innerHTML = MENU.map(
+          (m) => `
+        <div class="mrow">
+          <span class="mrow-emo">${m.emoji}</span>
+          <div class="mrow-info">
+            <div class="mrow-name">${m.name}</div>
+            <div class="mrow-cat">${m.cat}</div>
+          </div>
+          <span class="mrow-price">₹${m.price}</span>
+          <button class="btn btn-red btn-sm" onclick="delItem(${m.id})">✕</button>
+        </div>`,
+        ).join("");
+      }
+
+      function addItem() {
+        const name = document.getElementById("nName").value.trim();
+        const cat = document.getElementById("nCat").value;
+        const price = parseInt(document.getElementById("nPrice").value);
+        const emoji = document.getElementById("nEmoji").value || "🍽️";
+        if (!name || !price) {
+          toast("Please fill all fields", "error");
+          return;
+        }
+        MENU.push({ id: Date.now(), name, emoji, price, cat });
+        saveMenu();
+        addLog("Menu item added: " + name + " (₹" + price + ")", "admin");
+        renderMenuList();
+        toast(emoji + " " + name + " added", "success");
+        document.getElementById("nName").value = "";
+        document.getElementById("nPrice").value = "";
+        document.getElementById("nEmoji").value = "";
+      }
+
+      function delItem(id) {
+        const m = MENU.find((x) => x.id === id);
+        MENU = MENU.filter((x) => x.id !== id);
+        saveMenu();
+        addLog("Menu item removed: " + m?.name, "admin");
+        renderMenuList();
+        toast(m?.name + " removed", "info");
+      }
+
+      function renderStudents() {
+        const students = JSON.parse(
+          localStorage.getItem("canteen_students") || "[]",
+        );
+        const el = document.getElementById("stuList");
+        document.getElementById("stuTotal").textContent =
+          students.length + " student" + (students.length !== 1 ? "s" : "");
+        if (!students.length) {
+          el.innerHTML =
+            '<div class="empty-state"><div class="icon">👥</div><p>No students registered yet</p></div>';
+          return;
+        }
+        el.innerHTML = students
+          .map(
+            (s, i) => `
+        <div class="srow">
+          <div class="savatar">👨‍🎓</div>
+          <div class="sinfo">
+            <div class="sname">${s.name}</div>
+            <div class="smeta">@${s.username} &nbsp;|&nbsp; Roll: ${s.roll}</div>
+          </div>
+          <button class="btn btn-red btn-sm" onclick="delStudent(${i})">Delete</button>
+        </div>`,
+          )
+          .join("");
+      }
+
+      function delStudent(i) {
+        const list = JSON.parse(
+          localStorage.getItem("canteen_students") || "[]",
+        );
+        const name = list[i]?.name;
+        list.splice(i, 1);
+        localStorage.setItem("canteen_students", JSON.stringify(list));
+        addLog("Student removed: " + name, "admin");
+        renderStudents();
+        toast(name + " removed", "info");
+      }
+
+      function addLog(msg, type = "order") {
+        log.unshift({ msg, type, time: new Date().toLocaleTimeString() });
+        if (log.length > 50) log.pop();
+        renderLog();
+      }
+
+      function renderLog() {
+        const el = document.getElementById("logList");
+        if (!log.length) {
+          el.innerHTML =
+            '<div class="empty-state"><div class="icon">📋</div><p>No activity yet</p></div>';
+          return;
+        }
+        el.innerHTML = log
+          .map(
+            (l) => `
+        <div class="lentry">
+          <span class="ltime">${l.time}</span>
+          <span class="ldot ${l.type}"></span>
+          <span>${l.msg}</span>
+        </div>`,
+          )
+          .join("");
+      }
+
+      function clearLog() {
+        log = [];
+        renderLog();
+      }
+
+      function seedDemo() {
+        orders = [
+          {
+            id: "ORD-1001",
+            student: "student",
+            items: [
+              { item: "Burger", qty: 2, price: 50 },
+              { item: "Coffee", qty: 1, price: 30 },
+            ],
+            total: 130,
+            time: "10:02 AM",
+            status: "Pending",
+          },
+          {
+            id: "ORD-1002",
+            student: "rahul",
+            items: [{ item: "Samosa", qty: 3, price: 15 }],
+            total: 45,
+            time: "10:08 AM",
+            status: "Preparing",
+          },
+          {
+            id: "ORD-1003",
+            student: "priya",
+            items: [
+              { item: "Pizza Slice", qty: 1, price: 80 },
+              { item: "Juice", qty: 1, price: 35 },
+            ],
+            total: 115,
+            time: "10:15 AM",
+            status: "Ready",
+          },
+        ];
+        addLog("Demo data loaded — backend offline", "admin");
+      }
+
+      function toast(msg, type = "info") {
+        const t = document.createElement("div");
+        t.className = `toast ${type}`;
+        t.textContent = msg;
+        document.getElementById("tc").appendChild(t);
+        setTimeout(() => t.remove(), 3000);
+      }
+
+      function logout() {
+        sessionStorage.clear();
+        window.location.href = "index.html";
+      }
+    </script>
+  </body>
+</html>
