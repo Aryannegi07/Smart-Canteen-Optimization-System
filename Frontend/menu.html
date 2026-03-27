@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Menu — Canteen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .layout { display: grid; grid-template-columns: 1fr 340px; gap: 22px; align-items: start; }
+    .page-header { margin-bottom: 22px; }
+    .page-header h2 { font-size: 1.55rem; font-weight: 800; }
+    .page-header p  { color: var(--muted); font-size: 0.82rem; margin-top: 4px; }
+
+    .search-bar  { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+    .search-wrap { flex: 1; position: relative; min-width: 180px; }
+    .search-wrap .ico { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+    .search-wrap input { padding-left: 36px; }
+
+    .filter-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+    .ftab {
+      border: 1px solid var(--border); background: var(--surface);
+      color: var(--muted); border-radius: 20px; padding: 6px 15px;
+      font-size: 0.79rem; font-weight: 600; cursor: pointer;
+      transition: all 0.18s; font-family: var(--font);
+    }
+    .ftab.active, .ftab:hover { background: rgba(200,75,47,0.08); color: var(--accent); border-color: rgba(200,75,47,0.25); }
+
+    .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(205px, 1fr)); gap: 13px; }
+    .mcard {
+      background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius);
+      padding: 17px; display: flex; flex-direction: column; gap: 9px;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .mcard:hover { transform: scale(1.028); border-color: var(--border2); }
+    .f-emoji { font-size: 34px; text-align: center; padding: 9px 0; }
+    .f-name  { font-size: 0.93rem; font-weight: 700; }
+    .f-cat   { font-size: 0.7rem; color: var(--muted); margin-top: 1px; }
+    .f-desc  { font-size: 0.76rem; color: var(--muted); line-height: 1.5; }
+    .f-foot  { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 10px; border-top: 1px solid var(--border); }
+    .f-price { font-family: var(--mono); font-size: 0.93rem; font-weight: 700; color: var(--accent2); }
+    .btn-add {
+      background: var(--accent); color: white; border: none;
+      border-radius: var(--radius-sm); padding: 6px 13px;
+      font-size: 0.79rem; font-weight: 700; cursor: pointer;
+      font-family: var(--font); transition: background 0.18s, transform 0.15s;
+    }
+    .btn-add:hover { background: var(--accent-h); transform: scale(1.05); }
+    .vdot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+    .vdot.veg  { background: var(--green); }
+    .vdot.nveg { background: var(--red);   }
+
+    .cart-panel {
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: var(--radius); padding: 20px; position: sticky; top: 74px;
+    }
+    .cart-hdr   { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .cart-title { font-size: 0.93rem; font-weight: 800; display: flex; align-items: center; gap: 7px; }
+    .cart-cnt   { background: var(--accent); color: white; font-size: 0.68rem; font-weight: 700; border-radius: 12px; padding: 2px 7px; font-family: var(--mono); }
+    .cart-items { display: flex; flex-direction: column; gap: 7px; min-height: 60px; max-height: 300px; overflow-y: auto; }
+    .citem      { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: var(--surface2); border-radius: 9px; border: 1px solid var(--border); }
+    .cname      { flex: 1; font-size: 0.81rem; font-weight: 600; }
+    .cprice     { font-family: var(--mono); font-size: 0.79rem; color: var(--accent2); }
+    .qty-ctrl   { display: flex; align-items: center; gap: 4px; }
+    .qty-btn    { width: 21px; height: 21px; border-radius: 5px; border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+    .qty-btn:hover { background: var(--accent); border-color: var(--accent); color: white; }
+    .qty-val    { font-family: var(--mono); font-size: 0.79rem; width: 17px; text-align: center; }
+    .cart-foot  { margin-top: 14px; padding-top: 13px; border-top: 1px solid var(--border); }
+    .trow       { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.82rem; color: var(--text2); }
+    .trow.grand { font-weight: 800; font-size: 0.93rem; color: var(--text); }
+    .trow .val  { font-family: var(--mono); color: var(--accent2); }
+    .btn-place  { width: 100%; padding: 12px; margin-top: 13px; font-size: 0.91rem; }
+    .cart-empty { color: var(--muted); font-size: 0.79rem; text-align: center; padding: 26px 0; }
+
+    @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } .cart-panel { position: static; } }
+  </style>
+</head>
+<body>
+  <nav class="topnav">
+    <div class="nav-logo">🍽️ Canteen</div>
+    <div class="nav-right">
+      <span class="nav-user" id="navUser"></span>
+      <span class="nav-badge">Student</span>
+      <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <div class="page-content">
+    <div class="page-header">
+      <h2>Today's Menu</h2>
+      <p>Add items to your cart and place an order</p>
+    </div>
+
+    <div class="search-bar">
+      <div class="search-wrap">
+        <span class="ico">🔍</span>
+        <input type="text" class="input-field" id="searchInput" placeholder="Search items..." oninput="filterMenu()"/>
+      </div>
+      <div class="filter-tabs">
+        <button class="ftab active" onclick="setFilter(this,'all')">All</button>
+        <button class="ftab" onclick="setFilter(this,'Beverages')">☕ Beverages</button>
+        <button class="ftab" onclick="setFilter(this,'Main Course')">🍽️ Main</button>
+        <button class="ftab" onclick="setFilter(this,'Snacks')">🍟 Snacks</button>
+        <button class="ftab" onclick="setFilter(this,'Drinks')">🥤 Drinks</button>
+      </div>
+    </div>
+
+    <div class="layout">
+      <div>
+        <div class="menu-grid" id="menuGrid"></div>
+      </div>
+
+      <div class="cart-panel">
+        <div class="cart-hdr">
+          <div class="cart-title">Cart <span class="cart-cnt" id="cartCount">0</span></div>
+          <button class="btn btn-red btn-sm" onclick="clearCart()">Clear</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+          <div class="cart-empty">Your cart is empty.<br/>Add items to get started.</div>
+        </div>
+        <div class="cart-foot" id="cartFoot" style="display:none">
+          <div class="trow"><span>Subtotal</span><span class="val" id="sub">₹0</span></div>
+          <div class="trow"><span>Tax (5%)</span><span class="val" id="tax">₹0</span></div>
+          <div class="divider"></div>
+          <div class="trow grand"><span>Total</span><span class="val" id="grand">₹0</span></div>
+          <button class="btn btn-primary btn-place" id="placeBtn" onclick="placeOrder()">Place Order →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="tc"></div>
+
+  <script>
+    const API      = 'http://localhost:8080/api';
+    const MENU_KEY = 'canteen_menu';
+
+    const DEFAULT_MENU = [
+      { id:1,  name:'Burger',       emoji:'🍔', price:50,  cat:'Main Course', desc:'Crispy veg patty with fresh veggies', veg:true  },
+      { id:2,  name:'Coffee',       emoji:'☕', price:30,  cat:'Beverages',   desc:'Hot freshly brewed filter coffee',    veg:true  },
+      { id:3,  name:'Cold Drink',   emoji:'🥤', price:25,  cat:'Drinks',      desc:'Chilled cola or lemon soda',          veg:true  },
+      { id:4,  name:'Pizza Slice',  emoji:'🍕', price:80,  cat:'Main Course', desc:'Cheesy veg pizza slice',              veg:true  },
+      { id:5,  name:'Samosa',       emoji:'🥟', price:15,  cat:'Snacks',      desc:'Crispy fried with aloo filling',      veg:true  },
+      { id:6,  name:'Maggi',        emoji:'🍜', price:30,  cat:'Main Course', desc:'Classic instant noodles with masala', veg:true  },
+      { id:7,  name:'Tea',          emoji:'🍵', price:10,  cat:'Beverages',   desc:'Kadak chai with ginger and elaichi',  veg:true  },
+      { id:8,  name:'Sandwich',     emoji:'🥪', price:40,  cat:'Snacks',      desc:'Grilled veg sandwich with chutney',   veg:true  },
+      { id:9,  name:'Chicken Roll', emoji:'🌯', price:70,  cat:'Main Course', desc:'Grilled chicken wrapped in paratha',  veg:false },
+      { id:10, name:'Juice',        emoji:'🧃', price:35,  cat:'Drinks',      desc:'Fresh seasonal fruit juice',          veg:true  },
+    ];
+
+    function getMenu() {
+      const s = localStorage.getItem(MENU_KEY);
+      if (!s) { localStorage.setItem(MENU_KEY, JSON.stringify(DEFAULT_MENU)); return [...DEFAULT_MENU]; }
+      return JSON.parse(s);
+    }
+
+    let MENU         = [];
+    let cart         = {};
+    let activeFilter = 'all';
+
+    window.onload = () => {
+      if (sessionStorage.getItem('role') !== 'student') { window.location.href = 'student-login.html'; return; }
+      document.getElementById('navUser').textContent = sessionStorage.getItem('displayName') || sessionStorage.getItem('user');
+      MENU = getMenu();
+      renderMenu(MENU);
+    };
+
+    function filterMenu() {
+      MENU = getMenu();
+      const q   = document.getElementById('searchInput').value.toLowerCase();
+      let   res = q ? MENU.filter(i => i.name.toLowerCase().includes(q) || i.cat.toLowerCase().includes(q)) : [...MENU];
+      if (activeFilter !== 'all') res = res.filter(i => i.cat === activeFilter);
+      renderMenu(res);
+    }
+
+    function setFilter(el, cat) {
+      document.querySelectorAll('.ftab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      activeFilter = cat;
+      filterMenu();
+    }
+
+    function renderMenu(items) {
+      const g = document.getElementById('menuGrid');
+      if (!items.length) {
+        g.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="icon">🔍</div><p>No items found</p></div>';
+        return;
+      }
+      g.innerHTML = items.map(i => `
+        <div class="mcard">
+          <div class="f-emoji">${i.emoji}</div>
+          <div>
+            <div class="f-name"><span class="vdot ${i.veg ? 'veg' : 'nveg'}"></span>${i.name}</div>
+            <div class="f-cat">${i.cat}</div>
+          </div>
+          <div class="f-desc">${i.desc || ''}</div>
+          <div class="f-foot">
+            <span class="f-price">₹${i.price}</span>
+            <button class="btn-add" onclick="addToCart(${i.id})">+ Add</button>
+          </div>
+        </div>`).join('');
+    }
+
+    function addToCart(id) {
+      const item = MENU.find(m => m.id === id);
+      if (!item) return;
+      if (cart[id]) cart[id].qty++; else cart[id] = { item, qty: 1 };
+      renderCart();
+      toast(item.emoji + ' ' + item.name + ' added', 'success');
+    }
+
+    function updateQty(id, d) {
+      if (!cart[id]) return;
+      cart[id].qty += d;
+      if (cart[id].qty <= 0) delete cart[id];
+      renderCart();
+    }
+
+    function clearCart() { cart = {}; renderCart(); }
+
+    function renderCart() {
+      const items = Object.values(cart);
+      document.getElementById('cartCount').textContent = items.reduce((s, c) => s + c.qty, 0);
+      const ci = document.getElementById('cartItems');
+      const cf = document.getElementById('cartFoot');
+      if (!items.length) {
+        ci.innerHTML = '<div class="cart-empty">Your cart is empty.<br/>Add items to get started.</div>';
+        cf.style.display = 'none'; return;
+      }
+      ci.innerHTML = items.map(({ item, qty }) => `
+        <div class="citem">
+          <span>${item.emoji}</span>
+          <div class="cname">${item.name}</div>
+          <div class="qty-ctrl">
+            <button class="qty-btn" onclick="updateQty(${item.id},-1)">−</button>
+            <span class="qty-val">${qty}</span>
+            <button class="qty-btn" onclick="updateQty(${item.id},+1)">+</button>
+          </div>
+          <span class="cprice">₹${item.price * qty}</span>
+        </div>`).join('');
+      const sub = items.reduce((s, c) => s + c.item.price * c.qty, 0);
+      const tx  = Math.round(sub * 0.05);
+      document.getElementById('sub').textContent   = '₹' + sub;
+      document.getElementById('tax').textContent   = '₹' + tx;
+      document.getElementById('grand').textContent = '₹' + (sub + tx);
+      cf.style.display = 'block';
+    }
+
+    async function placeOrder() {
+      const items = Object.values(cart);
+      if (!items.length) return;
+      const btn = document.getElementById('placeBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Placing...';
+      const payload = {
+        studentName: sessionStorage.getItem('user'),
+        items: items.map(c => ({ item: c.item.name, qty: c.qty, price: c.item.price })),
+        total: items.reduce((s, c) => s + c.item.price * c.qty, 0)
+      };
+      try {
+        const res = await fetch(`${API}/orders`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        toast(res.ok ? 'Order placed successfully!' : 'Order saved locally.', res.ok ? 'success' : 'info');
+      } catch {
+        toast('Order saved (offline mode)', 'info');
+      }
+      const saved = JSON.parse(sessionStorage.getItem('myOrders') || '[]');
+      saved.unshift({ ...payload, status: 'Pending', time: new Date().toLocaleTimeString() });
+      sessionStorage.setItem('myOrders', JSON.stringify(saved));
+      clearCart();
+      btn.disabled = false;
+      btn.innerHTML = 'Place Order →';
+    }
+
+    function toast(msg, type = 'info') {
+      const t = document.createElement('div');
+      t.className = `toast ${type}`; t.textContent = msg;
+      document.getElementById('tc').appendChild(t);
+      setTimeout(() => t.remove(), 3000);
+    }
+
+    function logout() { sessionStorage.clear(); window.location.href = 'index.html'; }
+  </script>
+</body>
+</html>
